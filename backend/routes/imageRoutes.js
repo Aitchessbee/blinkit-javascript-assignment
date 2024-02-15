@@ -1,8 +1,11 @@
-// routes/imageRoutes.js
 const express = require("express");
 const router = express.Router();
 const multer = require("multer");
-const { uploadImage } = require("../controllers/imageController");
+const {
+  uploadImage,
+  getAllImages,
+  deleteImage,
+} = require("../controllers/imageController"); // Import the deleteImage controller
 const verifyToken = require("../middleware/verifyToken");
 
 const storage = multer.diskStorage({
@@ -25,11 +28,13 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({
   storage: storage,
   limits: {
-    fileSize: 1024 * 1024 * 5, // 5MB
+    fileSize: 1024 * 1024 * 20, // 5MB
   },
   fileFilter: fileFilter,
 });
 
 router.post("/upload", verifyToken, upload.single("image"), uploadImage);
+router.get("/getAll", verifyToken, getAllImages);
+router.delete("/:id", verifyToken, deleteImage); // Add the delete route
 
 module.exports = router;
